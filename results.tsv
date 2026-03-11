@@ -2,3 +2,4 @@ commit	val_bpb	memory_gb	status	description
 21b86c4	1.379616	0.0	keep	baseline: depth=4 dim=256 11.5M params
 6e4ab46	1.764969	0.0	discard	depth=8 dim=512 50M params — only 69 steps on MPS too slow
 352cab4	1.475373	0.0	discard	HEAD_DIM=64 4 heads dim=256 — still slower 205 steps MPS inefficient
+5068279	1.360532	0.0	keep	TOTAL_BATCH_SIZE=2^15 half batch 2x steps — improved
