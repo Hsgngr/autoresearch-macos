@@ -16,18 +16,5 @@
       "Bash(grep *)",
       "Bash(tail *)"
     ]
-  },
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "cd /Users/egehosgungor/Desktop/Ege/Repos/autoresearch-macos && git add -A && git diff --cached --quiet || git commit -m \"auto: update $(git diff --cached --name-only | head -1) [$(date '+%Y-%m-%d %H:%M')]\""
-          }
-        ]
-      }
-    ]
   }
 }
