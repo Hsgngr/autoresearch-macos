@@ -542,10 +542,34 @@ def build_model_config(depth):
 config = build_model_config(DEPTH)
 print(f"Model config: {asdict(config)}")
 
+CHECKPOINT_PATH = "checkpoint.pt"
+
+def config_hash(cfg):
+    """Stable hash of architecture-defining fields only."""
+    import hashlib, json
+    arch = {k: getattr(cfg, k) for k in ("n_layer", "n_head", "n_kv_head", "n_embd", "vocab_size")}
+    return hashlib.md5(json.dumps(arch, sort_keys=True).encode()).hexdigest()[:8]
+
 with torch.device("meta"):
     model = GPT(config)
 model.to_empty(device=device)
 model.init_weights()
+
+# Load checkpoint if architecture matches
+_ckpt_loaded = False
+_arch_hash = config_hash(config)
+if os.path.exists(CHECKPOINT_PATH):
+    try:
+        ckpt = torch.load(CHECKPOINT_PATH, map_location=device, weights_only=False)
+        if ckpt.get("arch_hash") == _arch_hash:
+            model.load_state_dict(ckpt["model"])
+            print(f"Resumed from checkpoint (arch={_arch_hash}, step={ckpt.get('step', '?')})")
+            _ckpt_loaded = True
+        else:
+            print(f"Checkpoint arch mismatch ({ckpt.get('arch_hash')} vs {_arch_hash}), starting fresh.")
+            os.remove(CHECKPOINT_PATH)
+    except Exception as e:
+        print(f"Checkpoint load failed ({e}), starting fresh.")
 
 param_counts = model.num_scaling_params()
 print("Parameter counts:")
@@ -677,6 +701,10 @@ while True:
 print()  # newline after \r training log
 
 total_tokens = step * TOTAL_BATCH_SIZE
+
+# Save checkpoint for next experiment (same architecture can resume)
+torch.save({"model": model.state_dict(), "arch_hash": _arch_hash, "step": step}, CHECKPOINT_PATH)
+print(f"Checkpoint saved (arch={_arch_hash})")
 
 # Final eval
 model.eval()
