@@ -1,5 +1,12 @@
 commit	val_bpb	memory_gb	status	description
 21b86c4	1.379616	0.0	keep	baseline: depth=4 dim=256 11.5M params
 6e4ab46	1.764969	0.0	discard	depth=8 dim=512 50M params — only 69 steps on MPS too slow
-352cab4	1.475373	0.0	discard	HEAD_DIM=64 4 heads dim=256 — still slower 205 steps MPS inefficient
+352cab4	1.475373	0.0	discard	HEAD_DIM=64 4 heads dim=256 — 205 steps MPS inefficient
 5068279	1.360532	0.0	keep	TOTAL_BATCH_SIZE=2^15 half batch 2x steps — improved
+a20e8a2	0.000000	0.0	crash	TOTAL_BATCH_SIZE=2^14 DEVICE_BATCH_SIZE=16 assert fail
+097c37a	1.347712	0.0	keep	TOTAL_BATCH_SIZE=2^14 DEVICE_BATCH_SIZE=8 890 steps — best
+515fa11	1.366126	0.0	discard	TOTAL_BATCH_SIZE=2^13 DEVICE_BATCH_SIZE=4 too small batch
+709e870	1.350212	0.0	discard	MATRIX_LR=0.06 no improvement
+f2a77ac	1.352478	0.0	discard	WARMDOWN_RATIO=0.3 worse than 0.5
+4b95143	1.349630	0.0	discard	WINDOW_PATTERN=SSSL marginal worse
+e31ada2	1.350980	0.0	discard	WEIGHT_DECAY=0.0 no improvement
