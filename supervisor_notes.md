@@ -5,6 +5,9 @@
 
 ---
 
+## ⚠️ CRITICAL: Always run on power adapter
+Battery mode throttles M2 Max severely — step time degrades from ~0.34s to ~0.55s, cutting steps from ~890 to ~546. Any result with num_steps < 800 should be treated as invalid. Always plug in before running experiments.
+
 ## Hardware context (M2 Max 64GB, MPS)
 - No `torch.compile` on MPS — every op is interpreted PyTorch, no kernel fusion
 - MPS JIT-compiles Metal kernels on first use — adds ~100-200s overhead per experiment
