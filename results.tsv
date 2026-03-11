@@ -10,3 +10,4 @@ a20e8a2	0.000000	0.0	crash	TOTAL_BATCH_SIZE=2^14 DEVICE_BATCH_SIZE=16 assert fai
 f2a77ac	1.352478	0.0	discard	WARMDOWN_RATIO=0.3 worse than 0.5
 4b95143	1.349630	0.0	discard	WINDOW_PATTERN=SSSL marginal worse
 e31ada2	1.350980	0.0	discard	WEIGHT_DECAY=0.0 no improvement
+aafa1b3	1.411615	0.0	discard	MPS pre-warmup caused memory fragmentation — 545 steps only

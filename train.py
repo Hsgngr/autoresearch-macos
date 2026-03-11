@@ -575,22 +575,6 @@ if device_type == "cuda":
 train_loader = make_dataloader(tokenizer, DEVICE_BATCH_SIZE, MAX_SEQ_LEN, "train")
 x, y, epoch = next(train_loader)  # prefetch first batch
 
-# Pre-warm MPS Metal kernels before training starts.
-# On MPS, the first forward+backward triggers Metal JIT compilation (~10-20s/step).
-# Running one dummy pass here moves that cost outside the timed training loop,
-# so the 10 warmup steps run at normal speed instead of compilation speed.
-if device_type == "mps":
-    print("Pre-warming MPS kernels...")
-    _pw_x = torch.zeros(DEVICE_BATCH_SIZE, MAX_SEQ_LEN, dtype=torch.long, device=device)
-    _pw_y = torch.zeros(DEVICE_BATCH_SIZE, MAX_SEQ_LEN, dtype=torch.long, device=device)
-    with autocast_ctx:
-        _pw_loss = model(_pw_x, _pw_y)
-    _pw_loss.backward()
-    model.zero_grad(set_to_none=True)
-    torch.mps.synchronize()
-    del _pw_x, _pw_y, _pw_loss
-    print("MPS kernels warmed up.")
-
 print(f"Time budget: {TIME_BUDGET}s")
 print(f"Gradient accumulation steps: {grad_accum_steps}")
 
