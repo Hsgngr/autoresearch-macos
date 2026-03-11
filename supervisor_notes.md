@@ -25,3 +25,9 @@
 - **Tokens per run matters as much as model size** — with a 5-min fixed budget, step speed is the primary constraint on MPS.
 - **Do not try DEPTH=12** without fixing the step speed problem first.
 - **MPS has no torch.compile** — no fusion benefit.
+
+
+When Researcher check these notes, they should add their findings.
+
+---
+Researcher Findings:
