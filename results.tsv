@@ -17,3 +17,4 @@ f472dd3	1.350705	0.0	keep	verification run power adapter 866 steps — baseline 
 c2dce74	1.350615	0.0	discard	WARMDOWN_RATIO=0.7 retry power adapter — no improvement vs 0.5
 cb0cffd	1.348923	0.0	discard	FINAL_LR_FRAC=0.1 retry power adapter — within noise no improvement
 bfb4d3a	1.351719	0.0	discard	Muon momentum ramp 300->200 steps — no improvement
+4dcbd7b	1.364248	0.0	discard	DEPTH=3 1047 steps — more steps but shallower model worse val_bpb
