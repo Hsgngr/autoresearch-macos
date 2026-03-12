@@ -21,3 +21,4 @@ bfb4d3a	1.351719	0.0	discard	Muon momentum ramp 300->200 steps — no improvemen
 9ff0a21	1.354677	0.0	discard	ADAM_BETAS=(0.9,0.95) higher beta1 — worse than (0.8,0.95)
 368e51c	1.348183	0.0	discard	EMBEDDING_LR=0.8 — within noise of best no improvement
 ad52500	1.354906	0.0	discard	WARMUP_RATIO=0.05 — warmup consumes training budget, worse
+ef954af	1.343433	0.0	keep	SCALAR_LR=1.0 EMBEDDING_LR=0.5 MATRIX_LR=0.025 — NEW BEST

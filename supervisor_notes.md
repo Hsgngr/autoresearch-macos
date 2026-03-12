@@ -1,7 +1,7 @@
 # Supervisor Notes
 
 ## Last updated
-2026-03-11 — 9 experiments run, best val_bpb=1.347712
+2026-03-11 — 21 experiments run, best val_bpb=1.343433
 
 ---
 
@@ -72,30 +72,31 @@ HEAD_DIM = 128           # → 2 heads
 WINDOW_PATTERN = "L"
 TOTAL_BATCH_SIZE = 2**14
 DEVICE_BATCH_SIZE = 8
-MATRIX_LR = 0.04
-EMBEDDING_LR = 0.6
+MATRIX_LR = 0.025        # ← changed from 0.04
+EMBEDDING_LR = 0.5       # ← changed from 0.6
+SCALAR_LR = 1.0          # ← changed from 0.5
 WARMDOWN_RATIO = 0.5
 WEIGHT_DECAY = 0.2
 ```
-val_bpb = **1.347712**
+val_bpb = **1.343433** (NEW BEST — improved from 1.347712)
 
 ---
 
 ## Suggested next directions
 
-1. **[NOW] Verify MPS pre-warmup saves time** — run one experiment and compare total_seconds vs before (~540s → ~360s target). If it works, all future experiments benefit.
+1. **[DONE — DISCARD] DEPTH=3** — 1047 steps but shallower model val_bpb=1.364248, worse
+2. **[DONE — DISCARD] ADAM_BETAS=(0.9,0.95)** — worse (1.354677)
+3. **[DONE — DISCARD] EMBEDDING_LR=0.8** — within noise (1.348183)
+4. **[DONE — DISCARD] WARMUP_RATIO=0.05** — consumes budget, worse (1.354906)
+5. **[DONE — NEW BEST] community LR SCALAR_LR=1.0 EMBEDDING_LR=0.5 MATRIX_LR=0.025** → 1.343433
 
-2. **Try ASPECT_RATIO=32 with DEPTH=8** — gives dim=256 (same!) but 8 layers. Same per-layer compute as baseline but double the depth. Step time should be ~2x (since we doubled layers at same dim) → ~450 steps. More representational capacity, worth testing.
-
-3. **Try WARMUP_RATIO=0.05** — small LR warmup at start. Only 45 steps of warmup (5% of 890), might stabilize early training.
-
-4. **Try FINAL_LR_FRAC=0.05** — instead of decaying to 0, keep a small final LR. May prevent over-aggressive compression at end of training.
-
-5. **Try EMBEDDING_LR=0.8** — embeddings have a lot of parameters (value_embeds = 4.2M of 11.5M total). Higher LR might help them converge faster.
-
-6. **Try ADAM_BETAS=(0.9, 0.95)** — slightly higher beta1. The default (0.8) is tuned for Muon+AdamW combos but worth testing.
-
-7. **Try GQA (n_kv_head=1)** — with DEPTH=4 and only 2 heads, using 1 KV head (GQA) reduces attention memory at same speed. Might allow DEVICE_BATCH_SIZE=16 at 2^15, combining the best of both. Less parameter sharing overhead.
+Next untested (from best config ef954af):
+- **Sweep SCALAR_LR around 1.0** — try 1.5 or 0.7 to understand sensitivity
+- **Sweep MATRIX_LR around 0.025** — try 0.02 or 0.03
+- **Sweep EMBEDDING_LR around 0.5** — try 0.4 or 0.6
+- **Try FINAL_LR_FRAC=0.05** — keep small final LR instead of decaying to 0
+- **Try GQA (n_kv_head=1)** — requires code change, 2 query heads + 1 KV head
+- **Try WEIGHT_DECAY=0.1** — current best still has 0.2, could try lower now that LRs changed
 
 ---
 
